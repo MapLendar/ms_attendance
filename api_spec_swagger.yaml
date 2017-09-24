@@ -1,0 +1,142 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: ms_attendance
+  description: This API keeps track of how many participants an event will have. (Python 3 + Django + Tastypie + MySQL)
+
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /attendance/:
+    get:
+      tags:
+      - Attendance
+      operationId: getAttendance
+      parameters:
+      - in: query
+        name: user_id
+        type: integer
+        format: int32
+        description: user id of the associated attendance event
+      - in: query
+        name: event_id
+        type: integer
+        format: int32
+        description: event id of the associated attendance event
+      - in: query
+        name: status
+        type: integer
+        format: int32
+        maximum: 2.0
+        minimum: 0.0
+        description: 'status (0\: not specified, 1\: not attending, 2\: attending)'
+      responses:
+        200:
+          description: All events
+          schema:
+            $ref: '#/definitions/Attendance_read'
+    post:
+      tags:
+      - Attendance
+      operationId: register
+      parameters:
+      - in: body
+        name: attendance
+        required: false
+        schema:
+          $ref: '#/definitions/Attendance_create'
+      responses:
+        200:
+          description: Attendance event succesfully created
+        406:
+          description: "Status values can only be 0: not specified, 1: not attending, 2: attending"
+        409:
+          description: "An attendance event already exists for the specified user_id and event_id combination"
+  /attendance/{id}/:
+    get:
+      tags:
+      - Attendance
+      operationId: getDetailedAttendance
+      parameters:
+      - name: id
+        in: path
+        description: The id of the attendance event to be retrieved
+        required: true
+        type: string
+      responses:
+        200:
+          description: specific attendance event information
+          schema:
+            $ref: '#/definitions/Attendance_read'
+        404:
+          description: Not found
+    put:
+      tags:
+      - Attendance
+      operationId: updateAttendance
+      parameters:
+      - name: id
+        in: path
+        description: The id of the product to be updated
+        required: true
+        type: string
+      - in: body
+        name: attendance
+        required: false
+        schema:
+          $ref: '#/definitions/Attendance_update'
+      responses:
+        200:
+          description: Attendance event succesfully edited
+        403:
+          description: Not allowed to edit user_id or event_id
+        409:
+          description: "Status values can only be 0: not specified, 1: not attending, 2: attending"
+definitions:
+  Attendance_read:
+    type: object
+    properties:
+      id:
+        type: integer
+      user_id:
+        type: integer
+      event_id:
+        type: integer
+      status:
+        type: integer
+      resource_uri:
+        type: string
+  Attendance_create:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      event_id:
+        type: integer
+      status:
+        type: integer
+        maximum: 2.0
+        minimum: 0.0
+  Attendance_update:
+    type: object
+    properties:
+      status:
+        type: integer
+        maximum: 2.0
+        minimum: 0.0
+# Added by API Auto Mocking Plugin
+# host: 192.168.99.101:3008
+# basePath: /api/
+# schemes:
+#  - http
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /ETeam/attendance/1.0.0
+# schemes:
+#  - http
+# Added by API Auto Mocking Plugin
+schemes:
+ - https
+ - http
