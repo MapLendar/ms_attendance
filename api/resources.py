@@ -31,10 +31,8 @@ class AttendanceResource(ModelResource):
             response = {"code":406,"response":"Status values can only be 0: not specified, 1: not attending, 2: attending"}
             return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
 
-        #updated_bundle = None
-        #location = None
-        updated_bundle = self.obj_create(bundle, request=request, **self.remove_api_resource_names(kwargs))
-        location = self.get_resource_uri(updated_bundle)
+        updated_bundle = None
+        location = None
         try:
             updated_bundle = self.obj_create(bundle, request=request, **self.remove_api_resource_names(kwargs))
             location = self.get_resource_uri(updated_bundle)
