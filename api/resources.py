@@ -41,7 +41,7 @@ class AttendanceResource(ModelResource):
                 response = {"code":409,"response":"An attendance event already exists for the specified user_id and event_id combination"}
                 return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
             elif e.args[0] == 1048:
-                response = {"code":406,"response":"user_id ({0}), event_id{1} or status({2}) cannot be null or blank, please verify".format(bundle.data['user_id'],bundle.data['event_id'],bundle.data['status'])}
+                response = {"code":406,"response":"user_id, event_id or status cannot be null or blank, please verify"}
                 return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
 
         response = {"code":201,"response":"Attendance event succesfully created","location":location}
