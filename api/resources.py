@@ -2,13 +2,15 @@
 from tastypie.resources import ModelResource
 from api.models import Attendance
 from tastypie.authorization import Authorization
-from tastypie import http
 from django.db import IntegrityError
+from django import http
+import json
 
 class AttendanceResource(ModelResource):
     class Meta:
         queryset = Attendance.objects.all()
         allowed_methods = ['get', 'post', 'put']
+        always_return_data = True
         resource_name = 'attendance'
         authorization = Authorization()
         filtering = {
@@ -23,24 +25,38 @@ class AttendanceResource(ModelResource):
         return self.build_bundle(data=dict(deserialized), request=request)
 
     def post_list(self, request, **kwargs):
-        bundle = custom_deserialize(self, request)
+        bundle = self.custom_deserialize(request)
+        response = dict()
         if int(bundle.data['status']) < 0 or int(bundle.data['status']) > 2:
-            return http.HttpNotAcceptable("Status values can only be 0: not specified, 1: not attending, 2: attending");
+            response = {"code":406,"response":"Status values can only be 0: not specified, 1: not attending, 2: attending"}
+            return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
 
+        #updated_bundle = None
+        #location = None
+        updated_bundle = self.obj_create(bundle, request=request, **self.remove_api_resource_names(kwargs))
+        location = self.get_resource_uri(updated_bundle)
         try:
             updated_bundle = self.obj_create(bundle, request=request, **self.remove_api_resource_names(kwargs))
+            location = self.get_resource_uri(updated_bundle)
         except IntegrityError as e:
             if e.args[0] == 1062:
-                return http.HttpConflict("An attendance event already exists for the specified user_id and event_id combination")
-        location = self.get_resource_uri(updated_bundle)
+                response = {"code":409,"response":"An attendance event already exists for the specified user_id and event_id combination"}
+                return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
+            elif e.args[0] == 1048:
+                response = {"code":406,"response":"user_id ({0}), event_id{1} or status({2}) cannot be null or blank, please verify".format(bundle.data['user_id'],bundle.data['event_id'],bundle.data['status'])}
+                return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
 
-        return http.HttpCreated("Attendance event succesfully created")
+        response = {"code":201,"response":"Attendance event succesfully created","location":location}
+        return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
 
     def put_detail(self, request, **kwargs):
-        bundle = custom_deserialize(self, request)
+        bundle = self.custom_deserialize(request)
+        response = dict()
         if int(bundle.data['status']) < 0 or int(bundle.data['status']) > 2:
-            return http.HttpNotAcceptable("Status values can only be 0: not specified, 1: not attending, 2: attending");
+            response = {"code":406,"response":"Status values can only be 0: not specified, 1: not attending, 2: attending"}
+            return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
         if 'user_id' in bundle.data or 'event_id' in bundle.data:
-            return http.HttpForbidden("Not allowed to edit user_id or event_id")
-
-            return http.HttpAccepted("Attendance event succesfully edited")
+            response = {"code":403,"response":"Not allowed to edit user_id or event_id"}
+            return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])
+        response = {"code":200,"response":"Attendance event succesfully edited"}
+        return http.HttpResponse(json.dumps(response), content_type='application/json', status=response["code"])

@@ -76,6 +76,19 @@ TASTYPIE_DEFAULT_FORMATS = ['json']
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+#Local settings
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'db_attendance',
+#        'USER': 'user_attendance',
+#        'PASSWORD': 'password_attendance',
+#        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+#        'PORT': '3306',
+#    }
+#}
+
+#Dockerized settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
