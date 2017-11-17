@@ -1,4 +1,4 @@
-# ms-attendance
+# ms_attendance
 
 Attendance events microservice for the calendar-map application
 
