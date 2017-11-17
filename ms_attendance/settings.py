@@ -80,7 +80,7 @@ TASTYPIE_DEFAULT_FORMATS = ['json']
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': '  db-attendance',
+#        'NAME': 'db-attendance',
 #        'USER': 'user_attendance',
 #        'PASSWORD': 'password_attendance',
 #        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': 'database_attendance',
         'USER': 'user_attendance',
         'PASSWORD': 'password_attendance',
-        'HOST': '  db-attendance',   # Or an IP Address that your DB is hosted on
+        'HOST': 'db-attendance',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }
