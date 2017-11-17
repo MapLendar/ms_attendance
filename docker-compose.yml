@@ -20,4 +20,4 @@ services:
     expose:
       - "3004"
     depends_on:
-      -   db-attendance
+      - db-attendance
