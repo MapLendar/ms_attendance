@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: ms-attendance
+  title: ms_attendance
   description: This API keeps track of how many participants an event will have. (Python 3 + Django + Tastypie + MySQL)
 
 consumes:
